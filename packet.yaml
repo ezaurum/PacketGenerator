@@ -1,0 +1,47 @@
+#byte_param_constructor : byte[] 를 받는 생성자가 있어서 그걸로 생성
+#from_byte_array FromByteArray : 메소드가 있어서 그걸로 변환, 빈 생성자가 있다고 가정
+#to_byte_array ToByteArray : 메소드가 있어서 그걸로 변환
+#property : 프로퍼티로 설정
+#has_instance_length : 인스턴스마다 Length가 설정되어 있음. \
+#                      length에 값이 있으면 그걸로 프로퍼티 이름을 삼음 기본값은 Length
+#has_type_length : 타입마다 Length가 설정되어 있음. \
+#                   length에 값이 있으면 그걸로 프로퍼티 이름을 삼음. 기본값은 Length
+#options 에 targets가 있으면 무조건 빈 생성자 있다고 가정
+
+Header :
+    comment : 헤더
+    fields :
+        - type : GameMessageType
+          name : MessageType
+          cast : Int32
+
+InitializeGame :
+    comment : 게임 초기화 정보
+    fields :
+        - name : Soap
+          type : Int16
+          collection : List
+          size : 4
+        - name : NumberOfPlayers
+          type : Int16
+        - name : Units
+          type : StageUnitInfo
+          options : [constructor]
+          collection : List
+          length : sizeof(Int16)
+          size : NumberOfPlayers
+          targets :
+            - name : Gold
+              type : Int64
+            - name : Order
+              type : Int32
+            - name : Color
+              cast : Int32
+              type : StageUnitInfo.UnitColorEnum            
+            - name : ControlMode
+              type : StageUnitInfo.ControlModeType
+              cast : Int32
+            - name : Id
+              type : Guid
+              length : 16
+              options : [byte_param_constructor, to_byte_array]
